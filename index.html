@@ -25,37 +25,84 @@ body{
 }
 
 .widget{
-  width:min(100vw,700px);
   aspect-ratio:1/1;
+  width:min(100vw,500px);
+
   position:relative;
   overflow:hidden;
 
-  background:
-    linear-gradient(
-      135deg,
-      rgba(255,255,255,.05),
-      rgba(255,255,255,0)
-    ),
-    #111827;
-
-  color:white;
+  background:#0f172a;
 }
-
-/* Rank Up */
 
 .rankup{
   position:absolute;
-  left:4%;
-  top:5%;
+  top:8%;
+  left:8%;
 
+  font-size:3rem;
   font-weight:900;
-  font-size:clamp(2rem,8vw,5rem);
 
   color:#00eaff;
-  transform:skewX(-15deg);
-  letter-spacing:-3px;
+
+  transform:skew(-12deg);
 }
 
+.circle{
+  position:absolute;
+
+  width:60%;
+  height:60%;
+
+  border-radius:50%;
+
+  background:rgba(98,196,255,.8);
+
+  top:20%;
+  left:20%;
+}
+
+.circle2{
+  width:40%;
+  height:40%;
+
+  left:48%;
+  top:12%;
+
+  background:rgba(145,225,255,.6);
+}
+
+.content{
+  position:absolute;
+
+  inset:0;
+
+  display:flex;
+  flex-direction:column;
+
+  justify-content:center;
+  align-items:center;
+
+  text-align:center;
+}
+
+.number{
+  font-size:7rem;
+  font-weight:900;
+}
+
+.stat{
+  font-size:2rem;
+  letter-spacing:.2em;
+}
+
+.rank{
+  margin-top:.5rem;
+
+  background:black;
+  padding:.3rem 1rem;
+
+  font-weight:700;
+}
 /* Circles */
 
 .circle{
@@ -219,17 +266,17 @@ button:hover{
 
 <div class="widget">
 
-<div class="rankup">RANK UP!</div>
+  <div class="rankup">RANK UP!</div>
 
-<div class="circle charm">
-  <div>
-    <span class="big-number">4</span>
-    <span class="stat-name">Charm</span>
+  <div class="circle"></div>
+  <div class="circle circle2"></div>
+
+  <div class="content">
+    <div class="number">5</div>
+    <div class="stat">COURAGE</div>
+    <div class="rank">Fearless</div>
   </div>
 
-  <div class="ring"></div>
-  <div class="ring"></div>
-  <div class="ring"></div>
 </div>
 
 <div class="circle courage">
