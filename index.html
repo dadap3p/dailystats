@@ -6,231 +6,183 @@
 <title>Persona Stats Widget</title>
 
 <style>
-:root{
-  --size: 360px; /* ⬅️ CHANGE THIS TO SCALE FOR NOTION */
-  --bg:#070A12;
-  --blue:#4cc9f0;
-  --pink:#f72585;
-  --green:#b8f7d4;
-  --yellow:#ffd166;
-}
+  body {
+    margin: 0;
+    background: #0b0f1a;
+    font-family: Arial, sans-serif;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
 
-body{
-  margin:0;
-  background:var(--bg);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  font-family:Arial, sans-serif;
-  overflow:hidden;
-}
+  .container {
+    width: 420px;
+    height: 420px;
+    position: relative;
+  }
 
-/* MAIN WRAPPER */
-.widget{
-  width:var(--size);
-  height:var(--size);
-  position:relative;
-  transform:skewY(-2deg);
-}
+  svg {
+    transform: rotate(-90deg);
+  }
 
-/* BACKGROUND GLOW */
-.widget::before{
-  content:"";
-  position:absolute;
-  inset:-40px;
-  background: radial-gradient(circle at 30% 20%, #4cc9f022, transparent 40%),
-              radial-gradient(circle at 70% 80%, #f7258522, transparent 45%);
-  filter:blur(10px);
-  animation: glow 6s infinite alternate;
-}
+  .bg-ring {
+    fill: none;
+    stroke: #1a2238;
+    stroke-width: 18;
+  }
 
-@keyframes glow{
-  from{opacity:0.7;}
-  to{opacity:1;}
-}
+  .stat-ring {
+    fill: none;
+    stroke-width: 18;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.6s ease;
+  }
 
-/* SVG */
-svg{
-  width:100%;
-  height:100%;
-  transform:rotate(-90deg);
-}
+  .label {
+    position: absolute;
+    font-size: 14px;
+    opacity: 0.9;
+  }
 
-/* BACK RINGS */
-.bg-ring{
-  fill:none;
-  stroke:#1a2238;
-  stroke-width:14;
-  opacity:0.9;
-}
+  .center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
 
-/* ACTIVE RINGS */
-.stat{
-  fill:none;
-  stroke-width:12;
-  stroke-linecap:round;
-  filter: drop-shadow(0 0 6px currentColor);
-  transition:0.6s ease;
-}
+  .center h2 {
+    margin: 0;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: #7dd3ff;
+  }
 
-/* CENTER UI */
-.center{
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%) skewY(2deg);
-  text-align:center;
-  z-index:2;
-}
+  .btns {
+    margin-top: 10px;
+  }
 
-.title{
-  font-size:14px;
-  letter-spacing:4px;
-  color:#7dd3ff;
-  margin-bottom:6px;
-}
+  button {
+    background: #1b2a4a;
+    border: 1px solid #2f4a7a;
+    color: white;
+    padding: 6px 10px;
+    margin: 3px;
+    cursor: pointer;
+    font-size: 12px;
+  }
 
-/* PERSONA STYLE BANNER */
-.banner{
-  position:absolute;
-  top:10px;
-  left:-20px;
-  transform:rotate(-12deg);
-  font-size:18px;
-  font-weight:bold;
-  letter-spacing:2px;
-  color:#fff;
-  background:#f72585;
-  padding:4px 10px;
-  box-shadow:4px 4px 0 #000;
-}
+  button:hover {
+    background: #27406f;
+  }
 
-/* STATS TEXT */
-.statsText{
-  position:absolute;
-  bottom:12px;
-  width:100%;
-  display:flex;
-  justify-content:space-around;
-  font-size:10px;
-  opacity:0.9;
-}
-
-/* CLICK HINT */
-.hint{
-  position:absolute;
-  bottom:32px;
-  width:100%;
-  text-align:center;
-  font-size:9px;
-  opacity:0.6;
-}
-
-/* CLICK AREA */
-.clickLayer{
-  position:absolute;
-  inset:0;
-  cursor:pointer;
-}
+  .stats-grid {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    font-size: 12px;
+    color: #9ad7ff;
+  }
 </style>
 </head>
 
 <body>
 
-<div class="widget" id="widget">
+<div class="container">
 
-<div class="banner">RANK UP</div>
+<svg width="420" height="420">
+  <!-- Background rings -->
+  <circle class="bg-ring" cx="210" cy="210" r="160"/>
+  <circle class="bg-ring" cx="210" cy="210" r="130"/>
+  <circle class="bg-ring" cx="210" cy="210" r="100"/>
+  <circle class="bg-ring" cx="210" cy="210" r="70"/>
 
-<svg id="svg"></svg>
+  <!-- Stats rings -->
+  <circle id="knowledge" class="stat-ring" cx="210" cy="210" r="160" stroke="#4cc9f0"/>
+  <circle id="social" class="stat-ring" cx="210" cy="210" r="130" stroke="#f72585"/>
+  <circle id="moral" class="stat-ring" cx="210" cy="210" r="100" stroke="#b8f7d4"/>
+  <circle id="courage" class="stat-ring" cx="210" cy="210" r="70" stroke="#ffd166"/>
+</svg>
 
 <div class="center">
-  <div class="title">SOCIAL STATS</div>
+  <h2>STATS</h2>
+  <div class="btns">
+    <button onclick="add('knowledge')">+ Knowledge</button>
+    <button onclick="add('social')">+ Social</button>
+    <button onclick="add('moral')">+ Moral</button>
+    <button onclick="add('courage')">+ Courage</button>
+    <button onclick="resetAll()">Reset</button>
+  </div>
 </div>
 
-<div class="hint">Click to +5 Knowledge • Shift+Click changes stat</div>
-
-<div class="statsText" id="labels"></div>
-
-<div class="clickLayer" onclick="handleClick(event)"></div>
+<div class="stats-grid">
+  <div>Knowledge: <span id="kVal">0</span></div>
+  <div>Social: <span id="sVal">0</span></div>
+  <div>Moral: <span id="mVal">0</span></div>
+  <div>Courage: <span id="cVal">0</span></div>
+</div>
 
 </div>
 
 <script>
-
-const stats = [
-  {name:"Knowledge", value:20, color:"#4cc9f0"},
-  {name:"Social", value:15, color:"#f72585"},
-  {name:"Moral", value:10, color:"#b8f7d4"},
-  {name:"Courage", value:25, color:"#ffd166"}
-];
-
-let active = 0;
-
 const MAX = 100;
 
-/* LOAD SAVE */
-const saved = localStorage.getItem("persona_compact");
-if(saved){
-  Object.assign(stats, JSON.parse(saved));
+const stats = {
+  knowledge: 0,
+  social: 0,
+  moral: 0,
+  courage: 0
+};
+
+// load saved
+const saved = localStorage.getItem("personaStats");
+if (saved) Object.assign(stats, JSON.parse(saved));
+
+function save() {
+  localStorage.setItem("personaStats", JSON.stringify(stats));
 }
 
-/* SAVE */
-function save(){
-  localStorage.setItem("persona_compact", JSON.stringify(stats));
+function setCircle(id, value, radius) {
+  const circle = document.getElementById(id);
+  const circumference = 2 * Math.PI * radius;
+  circle.style.strokeDasharray = circumference;
+  circle.style.strokeDashoffset = circumference - (value / MAX) * circumference;
 }
 
-/* RENDER SVG */
-function render(){
-  const svg = document.getElementById("svg");
-  svg.innerHTML = "";
+function updateUI() {
+  setCircle("knowledge", stats.knowledge, 160);
+  setCircle("social", stats.social, 130);
+  setCircle("moral", stats.moral, 100);
+  setCircle("courage", stats.courage, 70);
 
-  const baseR = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--size'))/2.4;
-
-  stats.forEach((s,i)=>{
-    const r = baseR - i*18;
-    const c = 2*Math.PI*r;
-
-    let circle = document.createElementNS("http://www.w3.org/2000/svg","circle");
-    circle.setAttribute("cx","50%");
-    circle.setAttribute("cy","50%");
-    circle.setAttribute("r",r);
-    circle.setAttribute("class","stat");
-    circle.style.stroke = s.color;
-    circle.style.strokeDasharray = c;
-    circle.style.strokeDashoffset = c - (s.value/MAX)*c;
-
-    svg.appendChild(circle);
-  });
-
-  document.getElementById("labels").innerHTML =
-    stats.map(s=>`<div style="color:${s.color}">${s.name} ${s.value}</div>`).join("");
+  document.getElementById("kVal").innerText = stats.knowledge;
+  document.getElementById("sVal").innerText = stats.social;
+  document.getElementById("mVal").innerText = stats.moral;
+  document.getElementById("cVal").innerText = stats.courage;
 
   save();
 }
 
-/* CLICK SYSTEM (Persona-style interaction) */
-function handleClick(e){
-
-  if(e.shiftKey){
-    active = (active + 1) % stats.length;
-    return;
-  }
-
-  stats[active].value = Math.min(MAX, stats[active].value + 5);
-
-  /* soft animation pop */
-  document.getElementById("widget").style.transform = "skewY(-2deg) scale(1.02)";
-  setTimeout(()=>{
-    document.getElementById("widget").style.transform = "skewY(-2deg) scale(1)";
-  },120);
-
-  render();
+function add(stat) {
+  stats[stat] = Math.min(MAX, stats[stat] + 5);
+  updateUI();
 }
 
-/* INIT */
-render();
+function resetAll() {
+  stats.knowledge = 0;
+  stats.social = 0;
+  stats.moral = 0;
+  stats.courage = 0;
+  updateUI();
+}
 
+// init
+updateUI();
 </script>
 
 </body>
