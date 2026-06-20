@@ -3,58 +3,51 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Persona Style Stats System</title>
+<title>Persona Stats Widget</title>
 
 <style>
+:root{
+  --size: 360px; /* ⬅️ CHANGE THIS TO SCALE FOR NOTION */
+  --bg:#070A12;
+  --blue:#4cc9f0;
+  --pink:#f72585;
+  --green:#b8f7d4;
+  --yellow:#ffd166;
+}
+
 body{
   margin:0;
-  font-family: Arial, sans-serif;
-  background:#070A12;
-  color:white;
+  background:var(--bg);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  font-family:Arial, sans-serif;
   overflow:hidden;
 }
 
-/* BACKGROUND GLOW */
-.bgGlow{
-  position:absolute;
-  width:100%;
-  height:100%;
-  background: radial-gradient(circle at 30% 20%, #1b2cff33, transparent 40%),
-              radial-gradient(circle at 70% 80%, #ff2bd633, transparent 45%);
-  animation: pulse 6s infinite alternate;
-}
-
-@keyframes pulse{
-  0%{filter:brightness(1);}
-  100%{filter:brightness(1.4);}
-}
-
-.container{
-  position:relative;
-  width:100%;
-  height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-}
-
-/* TOP UI */
-.header{
-  position:absolute;
-  top:20px;
-  left:20px;
-  font-size:14px;
-  letter-spacing:2px;
-  opacity:0.8;
-}
-
-/* MAIN PANEL */
-.panel{
-  width:420px;
-  height:420px;
+/* MAIN WRAPPER */
+.widget{
+  width:var(--size);
+  height:var(--size);
   position:relative;
   transform:skewY(-2deg);
+}
+
+/* BACKGROUND GLOW */
+.widget::before{
+  content:"";
+  position:absolute;
+  inset:-40px;
+  background: radial-gradient(circle at 30% 20%, #4cc9f022, transparent 40%),
+              radial-gradient(circle at 70% 80%, #f7258522, transparent 45%);
+  filter:blur(10px);
+  animation: glow 6s infinite alternate;
+}
+
+@keyframes glow{
+  from{opacity:0.7;}
+  to{opacity:1;}
 }
 
 /* SVG */
@@ -64,318 +57,178 @@ svg{
   transform:rotate(-90deg);
 }
 
+/* BACK RINGS */
 .bg-ring{
   fill:none;
-  stroke:#1b2338;
-  stroke-width:16;
-}
-
-.stat-ring{
-  fill:none;
+  stroke:#1a2238;
   stroke-width:14;
-  stroke-linecap:round;
-  transition:0.5s;
-  filter: drop-shadow(0 0 6px currentColor);
+  opacity:0.9;
 }
 
-/* CENTER */
+/* ACTIVE RINGS */
+.stat{
+  fill:none;
+  stroke-width:12;
+  stroke-linecap:round;
+  filter: drop-shadow(0 0 6px currentColor);
+  transition:0.6s ease;
+}
+
+/* CENTER UI */
 .center{
   position:absolute;
   top:50%;
   left:50%;
-  transform:translate(-50%,-50%);
+  transform:translate(-50%,-50%) skewY(2deg);
   text-align:center;
+  z-index:2;
 }
 
-.center h1{
-  font-size:16px;
-  letter-spacing:3px;
+.title{
+  font-size:14px;
+  letter-spacing:4px;
   color:#7dd3ff;
+  margin-bottom:6px;
 }
 
-/* BUTTONS */
-button{
-  background:#121a33;
-  border:1px solid #2a3a66;
-  color:white;
-  padding:6px 10px;
-  margin:3px;
-  font-size:11px;
-  cursor:pointer;
-  transition:0.2s;
-}
-button:hover{
-  background:#1c2a55;
-  transform:scale(1.05);
-}
-
-/* STATS LIST */
-.list{
+/* PERSONA STYLE BANNER */
+.banner{
   position:absolute;
-  bottom:10px;
+  top:10px;
+  left:-20px;
+  transform:rotate(-12deg);
+  font-size:18px;
+  font-weight:bold;
+  letter-spacing:2px;
+  color:#fff;
+  background:#f72585;
+  padding:4px 10px;
+  box-shadow:4px 4px 0 #000;
+}
+
+/* STATS TEXT */
+.statsText{
+  position:absolute;
+  bottom:12px;
   width:100%;
   display:flex;
   justify-content:space-around;
-  font-size:11px;
+  font-size:10px;
   opacity:0.9;
 }
 
-/* MODAL */
-.modal{
+/* CLICK HINT */
+.hint{
   position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  background:#0f1730;
-  border:1px solid #2b3b6f;
-  padding:10px;
-  display:none;
-  z-index:10;
+  bottom:32px;
+  width:100%;
+  text-align:center;
+  font-size:9px;
+  opacity:0.6;
 }
 
-input{
-  width:120px;
-  margin:3px;
-  background:#0b1022;
-  border:1px solid #2b3b6f;
-  color:white;
-  padding:5px;
-  font-size:11px;
-}
-
-/* MOBILE */
-@media(max-width:500px){
-  .panel{width:320px;height:320px;}
+/* CLICK AREA */
+.clickLayer{
+  position:absolute;
+  inset:0;
+  cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
-<div class="bgGlow"></div>
+<div class="widget" id="widget">
 
-<div class="container">
-
-<div class="header">PERSONA STATS SYSTEM v2</div>
-
-<div class="panel">
+<div class="banner">RANK UP</div>
 
 <svg id="svg"></svg>
 
 <div class="center">
-  <h1 id="streak">STREAK: 0</h1>
-  <div>
-    <button onclick="addStat()">ADD STAT</button>
-    <button onclick="resetAll()">RESET</button>
-    <button onclick="syncCloud()">SYNC</button>
-  </div>
+  <div class="title">SOCIAL STATS</div>
 </div>
 
-</div>
+<div class="hint">Click to +5 Knowledge • Shift+Click changes stat</div>
 
-<div class="list" id="list"></div>
+<div class="statsText" id="labels"></div>
 
-<!-- MODAL -->
-<div class="modal" id="modal">
-  <div>Add / Edit Stat</div>
-  <input id="name" placeholder="Name"/>
-  <input id="color" placeholder="Color (#ff00aa)"/>
-  <button onclick="saveStat()">SAVE</button>
-  <button onclick="closeModal()">X</button>
-</div>
+<div class="clickLayer" onclick="handleClick(event)"></div>
 
 </div>
 
 <script>
 
-/* =========================
-   DATA SYSTEM
-========================= */
-
-let stats = JSON.parse(localStorage.getItem("stats_v2") || "null") || [
-  {id:1,name:"Knowledge",value:20,xp:0,level:1,color:"#4cc9f0"},
-  {id:2,name:"Social",value:15,xp:0,level:1,color:"#f72585"},
-  {id:3,name:"Moral",value:10,xp:0,level:1,color:"#b8f7d4"},
-  {id:4,name:"Courage",value:25,xp:0,level:1,color:"#ffd166"}
+const stats = [
+  {name:"Knowledge", value:20, color:"#4cc9f0"},
+  {name:"Social", value:15, color:"#f72585"},
+  {name:"Moral", value:10, color:"#b8f7d4"},
+  {name:"Courage", value:25, color:"#ffd166"}
 ];
 
-let streak = JSON.parse(localStorage.getItem("streak")||"0");
-let lastLogin = localStorage.getItem("lastLogin") || "";
+let active = 0;
 
-/* =========================
-   STREAK SYSTEM
-========================= */
+const MAX = 100;
 
-function updateStreak(){
-  let today = new Date().toDateString();
-
-  if(lastLogin !== today){
-    streak++;
-    lastLogin = today;
-    localStorage.setItem("lastLogin", today);
-    localStorage.setItem("streak", streak);
-  }
-
-  document.getElementById("streak").innerText = "STREAK: " + streak;
-}
-updateStreak();
-
-/* =========================
-   XP SYSTEM
-========================= */
-
-function addXP(stat){
-  stat.xp += 10;
-  let needed = stat.level * 50;
-
-  if(stat.xp >= needed){
-    stat.level++;
-    stat.xp = 0;
-    stat.value += 5;
-  }
+/* LOAD SAVE */
+const saved = localStorage.getItem("persona_compact");
+if(saved){
+  Object.assign(stats, JSON.parse(saved));
 }
 
-/* =========================
-   RENDER SVG RINGS
-========================= */
+/* SAVE */
+function save(){
+  localStorage.setItem("persona_compact", JSON.stringify(stats));
+}
 
+/* RENDER SVG */
 function render(){
   const svg = document.getElementById("svg");
   svg.innerHTML = "";
 
-  let baseR = 150;
+  const baseR = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--size'))/2.4;
 
   stats.forEach((s,i)=>{
-    let r = baseR - i*25;
-    let circumference = 2*Math.PI*r;
+    const r = baseR - i*18;
+    const c = 2*Math.PI*r;
 
     let circle = document.createElementNS("http://www.w3.org/2000/svg","circle");
-    circle.setAttribute("cx",210);
-    circle.setAttribute("cy",210);
+    circle.setAttribute("cx","50%");
+    circle.setAttribute("cy","50%");
     circle.setAttribute("r",r);
-    circle.setAttribute("class","stat-ring");
-    circle.setAttribute("stroke",s.color);
-    circle.style.strokeDasharray = circumference;
-    circle.style.strokeDashoffset = circumference - (s.value/100)*circumference;
+    circle.setAttribute("class","stat");
+    circle.style.stroke = s.color;
+    circle.style.strokeDasharray = c;
+    circle.style.strokeDashoffset = c - (s.value/MAX)*c;
 
     svg.appendChild(circle);
   });
 
-  renderList();
+  document.getElementById("labels").innerHTML =
+    stats.map(s=>`<div style="color:${s.color}">${s.name} ${s.value}</div>`).join("");
+
+  save();
 }
 
-/* =========================
-   LIST UI
-========================= */
+/* CLICK SYSTEM (Persona-style interaction) */
+function handleClick(e){
 
-function renderList(){
-  let list = document.getElementById("list");
-  list.innerHTML = "";
-
-  stats.forEach(s=>{
-    let div = document.createElement("div");
-    div.innerHTML = `
-      <span style="color:${s.color}">${s.name}</span>
-      L${s.level} XP:${s.xp}
-      <button onclick="boost(${s.id})">+</button>
-      <button onclick="edit(${s.id})">✎</button>
-      <button onclick="del(${s.id})">x</button>
-    `;
-    list.appendChild(div);
-  });
-
-  localStorage.setItem("stats_v2", JSON.stringify(stats));
-}
-
-/* =========================
-   ACTIONS
-========================= */
-
-function boost(id){
-  let s = stats.find(x=>x.id===id);
-  s.value = Math.min(100, s.value + 5);
-  addXP(s);
-  render();
-}
-
-function resetAll(){
-  stats.forEach(s=>{
-    s.value=0; s.xp=0; s.level=1;
-  });
-  render();
-}
-
-/* =========================
-   ADD / EDIT SYSTEM
-========================= */
-
-let editing = null;
-
-function addStat(){
-  editing = null;
-  document.getElementById("modal").style.display="block";
-}
-
-function edit(id){
-  editing = stats.find(s=>s.id===id);
-  document.getElementById("name").value = editing.name;
-  document.getElementById("color").value = editing.color;
-  document.getElementById("modal").style.display="block";
-}
-
-function saveStat(){
-  let name = document.getElementById("name").value;
-  let color = document.getElementById("color").value;
-
-  if(editing){
-    editing.name = name;
-    editing.color = color;
-  } else {
-    stats.push({
-      id:Date.now(),
-      name,
-      color,
-      value:10,
-      xp:0,
-      level:1
-    });
+  if(e.shiftKey){
+    active = (active + 1) % stats.length;
+    return;
   }
 
-  closeModal();
+  stats[active].value = Math.min(MAX, stats[active].value + 5);
+
+  /* soft animation pop */
+  document.getElementById("widget").style.transform = "skewY(-2deg) scale(1.02)";
+  setTimeout(()=>{
+    document.getElementById("widget").style.transform = "skewY(-2deg) scale(1)";
+  },120);
+
   render();
 }
 
-function del(id){
-  stats = stats.filter(s=>s.id!==id);
-  render();
-}
-
-function closeModal(){
-  document.getElementById("modal").style.display="none";
-}
-
-/* =========================
-   CLOUD SYNC (OPTIONAL FIREBASE)
-========================= */
-/*
-To enable:
-1. Create Firebase project
-2. Paste config below
-3. Enable Firestore
-
-const firebaseConfig = { ... };
-*/
-
-/*
-async function syncCloud(){
-  alert("Cloud sync not configured yet.");
-}
-*/
-
-/* =========================
-   INIT
-========================= */
-
+/* INIT */
 render();
 
 </script>
