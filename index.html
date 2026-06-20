@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Persona Stats Widget</title>
+
+<style>
+  body {
+    margin: 0;
+    background: #0b0f1a;
+    font-family: Arial, sans-serif;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .container {
+    width: 420px;
+    height: 420px;
+    position: relative;
+  }
+
+  svg {
+    transform: rotate(-90deg);
+  }
+
+  .bg-ring {
+    fill: none;
+    stroke: #1a2238;
+    stroke-width: 18;
+  }
+
+  .stat-ring {
+    fill: none;
+    stroke-width: 18;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.6s ease;
+  }
+
+  .label {
+    position: absolute;
+    font-size: 14px;
+    opacity: 0.9;
+  }
+
+  .center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  .center h2 {
+    margin: 0;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: #7dd3ff;
+  }
+
+  .btns {
+    margin-top: 10px;
+  }
+
+  button {
+    background: #1b2a4a;
+    border: 1px solid #2f4a7a;
+    color: white;
+    padding: 6px 10px;
+    margin: 3px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  button:hover {
+    background: #27406f;
+  }
+
+  .stats-grid {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    font-size: 12px;
+    color: #9ad7ff;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<svg width="420" height="420">
+  <!-- Background rings -->
+  <circle class="bg-ring" cx="210" cy="210" r="160"/>
+  <circle class="bg-ring" cx="210" cy="210" r="130"/>
+  <circle class="bg-ring" cx="210" cy="210" r="100"/>
+  <circle class="bg-ring" cx="210" cy="210" r="70"/>
+
+  <!-- Stats rings -->
+  <circle id="knowledge" class="stat-ring" cx="210" cy="210" r="160" stroke="#4cc9f0"/>
+  <circle id="social" class="stat-ring" cx="210" cy="210" r="130" stroke="#f72585"/>
+  <circle id="moral" class="stat-ring" cx="210" cy="210" r="100" stroke="#b8f7d4"/>
+  <circle id="courage" class="stat-ring" cx="210" cy="210" r="70" stroke="#ffd166"/>
+</svg>
+
+<div class="center">
+  <h2>STATS</h2>
+  <div class="btns">
+    <button onclick="add('knowledge')">+ Knowledge</button>
+    <button onclick="add('social')">+ Social</button>
+    <button onclick="add('moral')">+ Moral</button>
+    <button onclick="add('courage')">+ Courage</button>
+    <button onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<div class="stats-grid">
+  <div>Knowledge: <span id="kVal">0</span></div>
+  <div>Social: <span id="sVal">0</span></div>
+  <div>Moral: <span id="mVal">0</span></div>
+  <div>Courage: <span id="cVal">0</span></div>
+</div>
+
+</div>
+
+<script>
+const MAX = 100;
+
+const stats = {
+  knowledge: 0,
+  social: 0,
+  moral: 0,
+  courage: 0
+};
+
+// load saved
+const saved = localStorage.getItem("personaStats");
+if (saved) Object.assign(stats, JSON.parse(saved));
+
+function save() {
+  localStorage.setItem("personaStats", JSON.stringify(stats));
+}
+
+function setCircle(id, value, radius) {
+  const circle = document.getElementById(id);
+  const circumference = 2 * Math.PI * radius;
+  circle.style.strokeDasharray = circumference;
+  circle.style.strokeDashoffset = circumference - (value / MAX) * circumference;
+}
+
+function updateUI() {
+  setCircle("knowledge", stats.knowledge, 160);
+  setCircle("social", stats.social, 130);
+  setCircle("moral", stats.moral, 100);
+  setCircle("courage", stats.courage, 70);
+
+  document.getElementById("kVal").innerText = stats.knowledge;
+  document.getElementById("sVal").innerText = stats.social;
+  document.getElementById("mVal").innerText = stats.moral;
+  document.getElementById("cVal").innerText = stats.courage;
+
+  save();
+}
+
+function add(stat) {
+  stats[stat] = Math.min(MAX, stats[stat] + 5);
+  updateUI();
+}
+
+function resetAll() {
+  stats.knowledge = 0;
+  stats.social = 0;
+  stats.moral = 0;
+  stats.courage = 0;
+  updateUI();
+}
+
+// init
+updateUI();
+</script>
+
+</body>
+</html>
