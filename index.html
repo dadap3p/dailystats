@@ -3,303 +3,616 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Persona Style Stats Tracker</title>
+
+<title>Persona Stats Tracker</title>
 
 <style>
+
+:root{
+  --bg:#071530;
+  --bg2:#091f45;
+  --cyan:#00e5ff;
+  --pink:#ff4d8f;
+  --white:#ffffff;
+}
+
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
 }
 
+html,
 body{
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    background:
-        linear-gradient(
-            135deg,
-            #020617 0%,
-            #08162f 45%,
-            #0a2155 100%
-        );
-
-    font-family: "Segoe UI", sans-serif;
-    color:white;
-    overflow:hidden;
+  width:100%;
+  min-height:100vh;
+  background:
+    linear-gradient(
+      135deg,
+      #020617 0%,
+      #08162f 40%,
+      #0b2458 100%
+    );
+  overflow-x:hidden;
+  font-family:
+    "Segoe UI",
+    sans-serif;
+  color:white;
 }
 
-/* giant faded text */
+/* giant background text */
+
 body::before{
-    content:"STATUS";
-    position:absolute;
-    bottom:-30px;
-    left:-20px;
-    font-size:160px;
-    font-weight:900;
-    color:rgba(255,255,255,0.04);
-    letter-spacing:10px;
-    pointer-events:none;
-}
+  content:"STATUS";
 
-.widget{
-    width:420px;
+  position:fixed;
 
-    background:
-        linear-gradient(
-            145deg,
-            rgba(10,20,45,.95),
-            rgba(5,10,25,.98)
-        );
+  bottom:-3vw;
+  left:-1vw;
 
-    border:2px solid #6ee7ff;
+  font-size:clamp(
+    90px,
+    20vw,
+    260px
+  );
 
-    clip-path: polygon(
-        0 0,
-        94% 0,
-        100% 8%,
-        100% 100%,
-        6% 100%,
-        0 92%
+  font-weight:900;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      .05
     );
 
-    padding:24px;
-
-    box-shadow:
-        0 0 30px rgba(0,200,255,.25),
-        inset 0 0 30px rgba(0,200,255,.08);
-
-    position:relative;
+  pointer-events:none;
 }
 
-/* decorative accent */
-.widget::before{
-    content:"";
-    position:absolute;
-    top:0;
-    right:0;
-    width:90px;
-    height:90px;
+/* floating shards */
 
-    background:
-        linear-gradient(
-            135deg,
-            transparent 50%,
-            #00d9ff 50%
-        );
+body::after{
+  content:"";
 
-    opacity:.2;
+  position:fixed;
+
+  top:0;
+  right:0;
+
+  width:45vw;
+  height:45vw;
+
+  background:
+  linear-gradient(
+      135deg,
+      transparent 60%,
+      rgba(0,229,255,.15)
+      60%
+  );
+
+  clip-path:
+      polygon(
+        0 0,
+        100% 0,
+        80% 30%,
+        100% 100%,
+        30% 70%
+      );
+
+  pointer-events:none;
 }
 
-.header{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    margin-bottom:24px;
+.wrapper{
+  width:100%;
+  padding:18px;
 }
 
-.header::before{
-    content:"";
-    width:60px;
-    height:4px;
-    background:#00d9ff;
-    box-shadow:0 0 10px #00d9ff;
+/* ==========================
+   TOP MENU
+========================== */
+
+.tabs{
+
+  display:flex;
+  gap:8px;
+
+  margin-bottom:18px;
 }
 
-.header h1{
-    font-size:22px;
-    letter-spacing:3px;
-    font-weight:900;
+.tab{
+
+  padding:
+    10px
+    18px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      .08
+    );
+
+  clip-path:
+    polygon(
+      0 0,
+      92% 0,
+      100% 50%,
+      92% 100%,
+      0 100%
+    );
+
+  font-weight:700;
+
+  transition:.2s;
 }
 
-.total{
-    text-align:center;
-    margin-bottom:24px;
+.tab:hover{
+  transform:
+    translateX(6px);
 }
 
-.total-label{
-    color:#7dd3ff;
-    letter-spacing:4px;
-    font-size:12px;
+.active{
+  background:white;
+  color:#001326;
 }
 
-.total-value{
-    font-size:56px;
-    font-weight:900;
-    line-height:1;
+/* ==========================
+   LEVEL SECTION
+========================== */
+
+.level-box{
+
+  border-top:
+    3px solid
+    var(--pink);
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      .05
+    );
+
+  padding:14px;
+  margin-bottom:18px;
+}
+
+.level-row{
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  margin-bottom:10px;
+}
+
+.level{
+
+  font-size:
+    clamp(
+      28px,
+      6vw,
+      54px
+    );
+
+  font-weight:900;
+}
+
+.xp-bar{
+
+  height:12px;
+  background:#14254b;
+  overflow:hidden;
+}
+
+.xp-fill{
+
+  height:100%;
+  width:0%;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--cyan),
+      white
+    );
+
+  transition:.4s;
+}
+
+/* ==========================
+   STAT BLOCKS
+========================== */
+
+.stats{
+
+  display:flex;
+  flex-direction:column;
+  gap:12px;
 }
 
 .stat{
-    display:grid;
-    grid-template-columns:100px 1fr 40px;
-    gap:10px;
-    align-items:center;
-    margin-bottom:14px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      .04
+    );
+
+  padding:14px;
+
+  border-left:
+    4px solid
+    transparent;
+
+  transition:
+    .25s;
+}
+
+.stat:hover{
+
+  transform:
+    translateX(10px);
+
+  border-left:
+    4px solid
+    var(--cyan);
+}
+
+.stat-header{
+
+  display:flex;
+  justify-content:space-between;
+
+  margin-bottom:8px;
 }
 
 .stat-name{
-    font-size:12px;
-    letter-spacing:2px;
-    font-weight:700;
+
+  color:
+    var(--cyan);
+
+  font-weight:800;
+  letter-spacing:2px;
+}
+
+.rank{
+
+  font-size:12px;
+
+  color:
+    #a5dfff;
+
+  margin-bottom:8px;
 }
 
 .bar{
-    height:12px;
-    background:#12213f;
-    overflow:hidden;
-    position:relative;
+
+  height:12px;
+
+  background:
+    #122344;
+
+  overflow:hidden;
 }
 
 .fill{
-    height:100%;
-    width:0%;
-    transition:0.4s ease;
+  height:100%;
+  width:0%;
+  transition:.4s;
 }
 
-.knowledge{
-    background:linear-gradient(
-        90deg,
-        #38bdf8,
-        #00ffff
+.k{
+  background:
+  linear-gradient(
+    90deg,
+    #00d9ff,
+    #7ffcff
+  );
+}
+
+.s{
+  background:
+  linear-gradient(
+    90deg,
+    #ff4d8f,
+    #ff9ac3
+  );
+}
+
+.m{
+  background:
+  linear-gradient(
+    90deg,
+    #84ffd0,
+    #d8fff1
+  );
+}
+
+.c{
+  background:
+  linear-gradient(
+    90deg,
+    #ffd166,
+    #fff2ba
+  );
+}
+
+/* ==========================
+   BUTTONS
+========================== */
+
+.controls{
+
+  margin-top:20px;
+
+  display:grid;
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(
+        140px,
+        1fr
+      )
     );
-}
 
-.social{
-    background:linear-gradient(
-        90deg,
-        #ff3d8d,
-        #ff77c5
-    );
-}
-
-.moral{
-    background:linear-gradient(
-        90deg,
-        #8dffc9,
-        #dcfff1
-    );
-}
-
-.courage{
-    background:linear-gradient(
-        90deg,
-        #ffd166,
-        #fff0b8
-    );
-}
-
-.value{
-    text-align:right;
-    font-weight:700;
-}
-
-.buttons{
-    margin-top:24px;
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:8px;
+  gap:8px;
 }
 
 button{
-    background:#08162f;
-    color:white;
-    border:1px solid #6ee7ff;
-    padding:10px;
-    cursor:pointer;
-    font-size:12px;
-    font-weight:700;
-    letter-spacing:1px;
-    transition:.2s;
+
+  position:relative;
+
+  overflow:hidden;
+
+  background:
+    #08162f;
+
+  color:white;
+
+  border:
+    1px solid
+    var(--cyan);
+
+  padding:10px;
+
+  cursor:pointer;
+
+  font-weight:700;
+}
+
+button::before{
+
+  content:"";
+
+  position:absolute;
+
+  top:0;
+  left:-120%;
+
+  width:100%;
+  height:100%;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,.4),
+      transparent
+    );
+
+  transform:
+    skewX(-25deg);
+
+  transition:.35s;
+}
+
+button:hover::before{
+  left:120%;
 }
 
 button:hover{
-    background:#00d9ff;
-    color:#00111f;
-
-    box-shadow:
-        0 0 15px rgba(0,217,255,.6);
+  background:
+    var(--cyan);
+  color:#001326;
 }
 
 .reset{
-    grid-column:span 2;
-    border-color:#ff5c8a;
+  border-color:
+    var(--pink);
 }
 
 .reset:hover{
-    background:#ff5c8a;
-    color:white;
+  background:
+    var(--pink);
+  color:white;
 }
 
 .footer{
-    margin-top:18px;
-    text-align:center;
-    font-size:11px;
-    color:#7aa9d6;
-    letter-spacing:2px;
+
+  margin-top:20px;
+
+  text-align:center;
+
+  color:#8ecfff;
+
+  font-size:11px;
+
+  letter-spacing:2px;
 }
+
 </style>
 </head>
 
 <body>
 
-<div class="widget">
+<div class="wrapper">
 
-    <div class="header">
-        <h1>PERSONAL STATS</h1>
-    </div>
+<div class="tabs">
+<div class="tab active">STATUS</div>
+<div class="tab">SOCIAL</div>
+<div class="tab">TRACKER</div>
+</div>
 
-    <div class="total">
-        <div class="total-label">TOTAL</div>
-        <div id="totalValue" class="total-value">0</div>
-    </div>
+<div class="level-box">
 
-    <div class="stat">
-        <div class="stat-name">KNOWLEDGE</div>
-        <div class="bar">
-            <div id="kBar" class="fill knowledge"></div>
-        </div>
-        <div id="kVal" class="value">0</div>
-    </div>
+<div class="level-row">
+<div>
+<div>LEVEL</div>
+<div
+class="level"
+id="level">
+1
+</div>
+</div>
 
-    <div class="stat">
-        <div class="stat-name">SOCIAL</div>
-        <div class="bar">
-            <div id="sBar" class="fill social"></div>
-        </div>
-        <div id="sVal" class="value">0</div>
-    </div>
+<div id="xpText">
+0 / 100 XP
+</div>
+</div>
 
-    <div class="stat">
-        <div class="stat-name">MORAL</div>
-        <div class="bar">
-            <div id="mBar" class="fill moral"></div>
-        </div>
-        <div id="mVal" class="value">0</div>
-    </div>
+<div class="xp-bar">
+<div
+class="xp-fill"
+id="xpFill">
+</div>
+</div>
 
-    <div class="stat">
-        <div class="stat-name">COURAGE</div>
-        <div class="bar">
-            <div id="cBar" class="fill courage"></div>
-        </div>
-        <div id="cVal" class="value">0</div>
-    </div>
+</div>
 
-    <div class="buttons">
-        <button onclick="add('knowledge')">+ KNOWLEDGE</button>
-        <button onclick="add('social')">+ SOCIAL</button>
+<div class="stats">
 
-        <button onclick="add('moral')">+ MORAL</button>
-        <button onclick="add('courage')">+ COURAGE</button>
+<div class="stat">
+<div class="stat-header">
+<div class="stat-name">
+KNOWLEDGE
+</div>
+<div id="kVal">
+0
+</div>
+</div>
 
-        <button class="reset" onclick="resetAll()">RESET ALL</button>
-    </div>
+<div
+class="rank"
+id="kRank">
+Average
+</div>
 
-    <div class="footer">
-        PERSONA STYLE TRACKER
-    </div>
+<div class="bar">
+<div
+class="fill k"
+id="kBar">
+</div>
+</div>
+</div>
+
+<div class="stat">
+<div class="stat-header">
+<div class="stat-name">
+SOCIAL
+</div>
+<div id="sVal">
+0
+</div>
+</div>
+
+<div
+class="rank"
+id="sRank">
+Average
+</div>
+
+<div class="bar">
+<div
+class="fill s"
+id="sBar">
+</div>
+</div>
+</div>
+
+<div class="stat">
+<div class="stat-header">
+<div class="stat-name">
+MORAL
+</div>
+<div id="mVal">
+0
+</div>
+</div>
+
+<div
+class="rank"
+id="mRank">
+Average
+</div>
+
+<div class="bar">
+<div
+class="fill m"
+id="mBar">
+</div>
+</div>
+</div>
+
+<div class="stat">
+<div class="stat-header">
+<div class="stat-name">
+COURAGE
+</div>
+<div id="cVal">
+0
+</div>
+</div>
+
+<div
+class="rank"
+id="cRank">
+Average
+</div>
+
+<div class="bar">
+<div
+class="fill c"
+id="cBar">
+</div>
+</div>
+</div>
+
+</div>
+
+<div class="controls">
+
+<button onclick="add('knowledge')">
++ KNOWLEDGE
+</button>
+
+<button onclick="add('social')">
++ SOCIAL
+</button>
+
+<button onclick="add('moral')">
++ MORAL
+</button>
+
+<button onclick="add('courage')">
++ COURAGE
+</button>
+
+<button
+class="reset"
+onclick="resetAll()">
+RESET
+</button>
+
+</div>
+
+<div class="footer">
+PERSONA INSPIRED STAT TRACKER
+</div>
 
 </div>
 
@@ -307,81 +620,169 @@ button:hover{
 
 const MAX = 100;
 
-const stats = {
-    knowledge: 0,
-    social: 0,
-    moral: 0,
-    courage: 0
+const ranks = [
+"Average",
+"Aware",
+"Smart",
+"Sharp",
+"Brilliant",
+"Genius"
+];
+
+let stats = {
+knowledge:0,
+social:0,
+moral:0,
+courage:0
 };
 
-const saved = localStorage.getItem("personaStats");
+let player = {
+level:1,
+xp:0
+};
 
-if(saved){
-    Object.assign(stats, JSON.parse(saved));
+const saveStats =
+localStorage.getItem(
+"personaStats"
+);
+
+const savePlayer =
+localStorage.getItem(
+"personaPlayer"
+);
+
+if(saveStats)
+stats =
+JSON.parse(
+saveStats
+);
+
+if(savePlayer)
+player =
+JSON.parse(
+savePlayer
+);
+
+function rank(v){
+
+if(v<20)return ranks[0];
+if(v<40)return ranks[1];
+if(v<60)return ranks[2];
+if(v<80)return ranks[3];
+if(v<100)return ranks[4];
+
+return ranks[5];
 }
 
-function save(){
-    localStorage.setItem(
-        "personaStats",
-        JSON.stringify(stats)
-    );
+function xpNeeded(){
+return player.level*100;
 }
 
-function updateUI(){
+function gainXP(amount){
 
-    document.getElementById("kBar").style.width =
-        stats.knowledge + "%";
+player.xp += amount;
 
-    document.getElementById("sBar").style.width =
-        stats.social + "%";
+while(
+player.xp >= xpNeeded()
+){
 
-    document.getElementById("mBar").style.width =
-        stats.moral + "%";
+player.xp -= xpNeeded();
+player.level++;
+}
 
-    document.getElementById("cBar").style.width =
-        stats.courage + "%";
-
-    document.getElementById("kVal").textContent =
-        stats.knowledge;
-
-    document.getElementById("sVal").textContent =
-        stats.social;
-
-    document.getElementById("mVal").textContent =
-        stats.moral;
-
-    document.getElementById("cVal").textContent =
-        stats.courage;
-
-    document.getElementById("totalValue").textContent =
-        stats.knowledge +
-        stats.social +
-        stats.moral +
-        stats.courage;
-
-    save();
 }
 
 function add(stat){
-    stats[stat] = Math.min(
-        MAX,
-        stats[stat] + 5
-    );
 
-    updateUI();
+stats[stat] =
+Math.min(
+100,
+stats[stat]+5
+);
+
+gainXP(15);
+
+update();
+}
+
+function update(){
+
+kBar.style.width =
+stats.knowledge+"%";
+
+sBar.style.width =
+stats.social+"%";
+
+mBar.style.width =
+stats.moral+"%";
+
+cBar.style.width =
+stats.courage+"%";
+
+kVal.textContent =
+stats.knowledge;
+
+sVal.textContent =
+stats.social;
+
+mVal.textContent =
+stats.moral;
+
+cVal.textContent =
+stats.courage;
+
+kRank.textContent =
+rank(stats.knowledge);
+
+sRank.textContent =
+rank(stats.social);
+
+mRank.textContent =
+rank(stats.moral);
+
+cRank.textContent =
+rank(stats.courage);
+
+level.textContent =
+player.level;
+
+xpText.textContent =
+`${player.xp} / ${xpNeeded()} XP`;
+
+xpFill.style.width =
+(player.xp/xpNeeded())
+*100+"%";
+
+localStorage.setItem(
+"personaStats",
+JSON.stringify(stats)
+);
+
+localStorage.setItem(
+"personaPlayer",
+JSON.stringify(player)
+);
+
 }
 
 function resetAll(){
 
-    stats.knowledge = 0;
-    stats.social = 0;
-    stats.moral = 0;
-    stats.courage = 0;
+stats={
+knowledge:0,
+social:0,
+moral:0,
+courage:0
+};
 
-    updateUI();
+player={
+level:1,
+xp:0
+};
+
+update();
 }
 
-updateUI();
+update();
 
 </script>
 
