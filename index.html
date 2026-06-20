@@ -3,186 +3,381 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Persona Stats Widget</title>
+<title>Persona Style Stats System</title>
 
 <style>
-  body {
-    margin: 0;
-    background: #0b0f1a;
-    font-family: Arial, sans-serif;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:#070A12;
+  color:white;
+  overflow:hidden;
+}
 
-  .container {
-    width: 420px;
-    height: 420px;
-    position: relative;
-  }
+/* BACKGROUND GLOW */
+.bgGlow{
+  position:absolute;
+  width:100%;
+  height:100%;
+  background: radial-gradient(circle at 30% 20%, #1b2cff33, transparent 40%),
+              radial-gradient(circle at 70% 80%, #ff2bd633, transparent 45%);
+  animation: pulse 6s infinite alternate;
+}
 
-  svg {
-    transform: rotate(-90deg);
-  }
+@keyframes pulse{
+  0%{filter:brightness(1);}
+  100%{filter:brightness(1.4);}
+}
 
-  .bg-ring {
-    fill: none;
-    stroke: #1a2238;
-    stroke-width: 18;
-  }
+.container{
+  position:relative;
+  width:100%;
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+}
 
-  .stat-ring {
-    fill: none;
-    stroke-width: 18;
-    stroke-linecap: round;
-    transition: stroke-dashoffset 0.6s ease;
-  }
+/* TOP UI */
+.header{
+  position:absolute;
+  top:20px;
+  left:20px;
+  font-size:14px;
+  letter-spacing:2px;
+  opacity:0.8;
+}
 
-  .label {
-    position: absolute;
-    font-size: 14px;
-    opacity: 0.9;
-  }
+/* MAIN PANEL */
+.panel{
+  width:420px;
+  height:420px;
+  position:relative;
+  transform:skewY(-2deg);
+}
 
-  .center {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-  }
+/* SVG */
+svg{
+  width:100%;
+  height:100%;
+  transform:rotate(-90deg);
+}
 
-  .center h2 {
-    margin: 0;
-    font-size: 18px;
-    letter-spacing: 2px;
-    color: #7dd3ff;
-  }
+.bg-ring{
+  fill:none;
+  stroke:#1b2338;
+  stroke-width:16;
+}
 
-  .btns {
-    margin-top: 10px;
-  }
+.stat-ring{
+  fill:none;
+  stroke-width:14;
+  stroke-linecap:round;
+  transition:0.5s;
+  filter: drop-shadow(0 0 6px currentColor);
+}
 
-  button {
-    background: #1b2a4a;
-    border: 1px solid #2f4a7a;
-    color: white;
-    padding: 6px 10px;
-    margin: 3px;
-    cursor: pointer;
-    font-size: 12px;
-  }
+/* CENTER */
+.center{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+}
 
-  button:hover {
-    background: #27406f;
-  }
+.center h1{
+  font-size:16px;
+  letter-spacing:3px;
+  color:#7dd3ff;
+}
 
-  .stats-grid {
-    position: absolute;
-    bottom: 10px;
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
-    font-size: 12px;
-    color: #9ad7ff;
-  }
+/* BUTTONS */
+button{
+  background:#121a33;
+  border:1px solid #2a3a66;
+  color:white;
+  padding:6px 10px;
+  margin:3px;
+  font-size:11px;
+  cursor:pointer;
+  transition:0.2s;
+}
+button:hover{
+  background:#1c2a55;
+  transform:scale(1.05);
+}
+
+/* STATS LIST */
+.list{
+  position:absolute;
+  bottom:10px;
+  width:100%;
+  display:flex;
+  justify-content:space-around;
+  font-size:11px;
+  opacity:0.9;
+}
+
+/* MODAL */
+.modal{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:#0f1730;
+  border:1px solid #2b3b6f;
+  padding:10px;
+  display:none;
+  z-index:10;
+}
+
+input{
+  width:120px;
+  margin:3px;
+  background:#0b1022;
+  border:1px solid #2b3b6f;
+  color:white;
+  padding:5px;
+  font-size:11px;
+}
+
+/* MOBILE */
+@media(max-width:500px){
+  .panel{width:320px;height:320px;}
+}
 </style>
 </head>
 
 <body>
 
+<div class="bgGlow"></div>
+
 <div class="container">
 
-<svg width="420" height="420">
-  <!-- Background rings -->
-  <circle class="bg-ring" cx="210" cy="210" r="160"/>
-  <circle class="bg-ring" cx="210" cy="210" r="130"/>
-  <circle class="bg-ring" cx="210" cy="210" r="100"/>
-  <circle class="bg-ring" cx="210" cy="210" r="70"/>
+<div class="header">PERSONA STATS SYSTEM v2</div>
 
-  <!-- Stats rings -->
-  <circle id="knowledge" class="stat-ring" cx="210" cy="210" r="160" stroke="#4cc9f0"/>
-  <circle id="social" class="stat-ring" cx="210" cy="210" r="130" stroke="#f72585"/>
-  <circle id="moral" class="stat-ring" cx="210" cy="210" r="100" stroke="#b8f7d4"/>
-  <circle id="courage" class="stat-ring" cx="210" cy="210" r="70" stroke="#ffd166"/>
-</svg>
+<div class="panel">
+
+<svg id="svg"></svg>
 
 <div class="center">
-  <h2>STATS</h2>
-  <div class="btns">
-    <button onclick="add('knowledge')">+ Knowledge</button>
-    <button onclick="add('social')">+ Social</button>
-    <button onclick="add('moral')">+ Moral</button>
-    <button onclick="add('courage')">+ Courage</button>
-    <button onclick="resetAll()">Reset</button>
+  <h1 id="streak">STREAK: 0</h1>
+  <div>
+    <button onclick="addStat()">ADD STAT</button>
+    <button onclick="resetAll()">RESET</button>
+    <button onclick="syncCloud()">SYNC</button>
   </div>
 </div>
 
-<div class="stats-grid">
-  <div>Knowledge: <span id="kVal">0</span></div>
-  <div>Social: <span id="sVal">0</span></div>
-  <div>Moral: <span id="mVal">0</span></div>
-  <div>Courage: <span id="cVal">0</span></div>
+</div>
+
+<div class="list" id="list"></div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div>Add / Edit Stat</div>
+  <input id="name" placeholder="Name"/>
+  <input id="color" placeholder="Color (#ff00aa)"/>
+  <button onclick="saveStat()">SAVE</button>
+  <button onclick="closeModal()">X</button>
 </div>
 
 </div>
 
 <script>
-const MAX = 100;
 
-const stats = {
-  knowledge: 0,
-  social: 0,
-  moral: 0,
-  courage: 0
-};
+/* =========================
+   DATA SYSTEM
+========================= */
 
-// load saved
-const saved = localStorage.getItem("personaStats");
-if (saved) Object.assign(stats, JSON.parse(saved));
+let stats = JSON.parse(localStorage.getItem("stats_v2") || "null") || [
+  {id:1,name:"Knowledge",value:20,xp:0,level:1,color:"#4cc9f0"},
+  {id:2,name:"Social",value:15,xp:0,level:1,color:"#f72585"},
+  {id:3,name:"Moral",value:10,xp:0,level:1,color:"#b8f7d4"},
+  {id:4,name:"Courage",value:25,xp:0,level:1,color:"#ffd166"}
+];
 
-function save() {
-  localStorage.setItem("personaStats", JSON.stringify(stats));
+let streak = JSON.parse(localStorage.getItem("streak")||"0");
+let lastLogin = localStorage.getItem("lastLogin") || "";
+
+/* =========================
+   STREAK SYSTEM
+========================= */
+
+function updateStreak(){
+  let today = new Date().toDateString();
+
+  if(lastLogin !== today){
+    streak++;
+    lastLogin = today;
+    localStorage.setItem("lastLogin", today);
+    localStorage.setItem("streak", streak);
+  }
+
+  document.getElementById("streak").innerText = "STREAK: " + streak;
+}
+updateStreak();
+
+/* =========================
+   XP SYSTEM
+========================= */
+
+function addXP(stat){
+  stat.xp += 10;
+  let needed = stat.level * 50;
+
+  if(stat.xp >= needed){
+    stat.level++;
+    stat.xp = 0;
+    stat.value += 5;
+  }
 }
 
-function setCircle(id, value, radius) {
-  const circle = document.getElementById(id);
-  const circumference = 2 * Math.PI * radius;
-  circle.style.strokeDasharray = circumference;
-  circle.style.strokeDashoffset = circumference - (value / MAX) * circumference;
+/* =========================
+   RENDER SVG RINGS
+========================= */
+
+function render(){
+  const svg = document.getElementById("svg");
+  svg.innerHTML = "";
+
+  let baseR = 150;
+
+  stats.forEach((s,i)=>{
+    let r = baseR - i*25;
+    let circumference = 2*Math.PI*r;
+
+    let circle = document.createElementNS("http://www.w3.org/2000/svg","circle");
+    circle.setAttribute("cx",210);
+    circle.setAttribute("cy",210);
+    circle.setAttribute("r",r);
+    circle.setAttribute("class","stat-ring");
+    circle.setAttribute("stroke",s.color);
+    circle.style.strokeDasharray = circumference;
+    circle.style.strokeDashoffset = circumference - (s.value/100)*circumference;
+
+    svg.appendChild(circle);
+  });
+
+  renderList();
 }
 
-function updateUI() {
-  setCircle("knowledge", stats.knowledge, 160);
-  setCircle("social", stats.social, 130);
-  setCircle("moral", stats.moral, 100);
-  setCircle("courage", stats.courage, 70);
+/* =========================
+   LIST UI
+========================= */
 
-  document.getElementById("kVal").innerText = stats.knowledge;
-  document.getElementById("sVal").innerText = stats.social;
-  document.getElementById("mVal").innerText = stats.moral;
-  document.getElementById("cVal").innerText = stats.courage;
+function renderList(){
+  let list = document.getElementById("list");
+  list.innerHTML = "";
 
-  save();
+  stats.forEach(s=>{
+    let div = document.createElement("div");
+    div.innerHTML = `
+      <span style="color:${s.color}">${s.name}</span>
+      L${s.level} XP:${s.xp}
+      <button onclick="boost(${s.id})">+</button>
+      <button onclick="edit(${s.id})">✎</button>
+      <button onclick="del(${s.id})">x</button>
+    `;
+    list.appendChild(div);
+  });
+
+  localStorage.setItem("stats_v2", JSON.stringify(stats));
 }
 
-function add(stat) {
-  stats[stat] = Math.min(MAX, stats[stat] + 5);
-  updateUI();
+/* =========================
+   ACTIONS
+========================= */
+
+function boost(id){
+  let s = stats.find(x=>x.id===id);
+  s.value = Math.min(100, s.value + 5);
+  addXP(s);
+  render();
 }
 
-function resetAll() {
-  stats.knowledge = 0;
-  stats.social = 0;
-  stats.moral = 0;
-  stats.courage = 0;
-  updateUI();
+function resetAll(){
+  stats.forEach(s=>{
+    s.value=0; s.xp=0; s.level=1;
+  });
+  render();
 }
 
-// init
-updateUI();
+/* =========================
+   ADD / EDIT SYSTEM
+========================= */
+
+let editing = null;
+
+function addStat(){
+  editing = null;
+  document.getElementById("modal").style.display="block";
+}
+
+function edit(id){
+  editing = stats.find(s=>s.id===id);
+  document.getElementById("name").value = editing.name;
+  document.getElementById("color").value = editing.color;
+  document.getElementById("modal").style.display="block";
+}
+
+function saveStat(){
+  let name = document.getElementById("name").value;
+  let color = document.getElementById("color").value;
+
+  if(editing){
+    editing.name = name;
+    editing.color = color;
+  } else {
+    stats.push({
+      id:Date.now(),
+      name,
+      color,
+      value:10,
+      xp:0,
+      level:1
+    });
+  }
+
+  closeModal();
+  render();
+}
+
+function del(id){
+  stats = stats.filter(s=>s.id!==id);
+  render();
+}
+
+function closeModal(){
+  document.getElementById("modal").style.display="none";
+}
+
+/* =========================
+   CLOUD SYNC (OPTIONAL FIREBASE)
+========================= */
+/*
+To enable:
+1. Create Firebase project
+2. Paste config below
+3. Enable Firestore
+
+const firebaseConfig = { ... };
+*/
+
+/*
+async function syncCloud(){
+  alert("Cloud sync not configured yet.");
+}
+*/
+
+/* =========================
+   INIT
+========================= */
+
+render();
+
 </script>
 
 </body>
